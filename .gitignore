@@ -1,0 +1,10 @@
+*.pdf
+*.o
+alloc/alloc
+caps/caps
+cml/cml
+djb2/djb2
+djb2/cdjb2
+hello/hello
+prt/prt
+upper/upper

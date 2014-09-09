@@ -1,0 +1,6 @@
+ab
+.include "Mstd.s"
+
+.data
+
+	line: .ascii "----\n"
