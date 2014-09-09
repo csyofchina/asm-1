@@ -34,7 +34,7 @@ Write:
 #	.lcomm convb, 2
 # IN:
 #  - %rax: Number to write
-#  - %rcx: Size of number in bytes (1,2,4,8,16,32,64)
+#  - %rcx: Size of number in bytes (1,2,4,8)
 #
 # This works by shifting the byte to be converted into %al.
 # eg: if param rax = 0x0e1e39b3:

@@ -32,6 +32,8 @@ hashtop:
 	jmp hashtop
 
 End:
-	mov %eax, %r10d	# RESULT - note only want lower 32 bits
+	# Result to print is already in %rax
+	mov $4, %rcx	# Only want the lower 4 bytes
+	call WriteHex	# from lib/std.s
 
-	Exit
+	Exit			# Macro in Mstd.s
