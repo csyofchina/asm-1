@@ -45,7 +45,9 @@ Write:
 #
 .global WriteHex
 WriteHex:
+	push %rax
 	push %rbx
+	push %rcx
 	push %rdx
 	push %rsi
 	push %rdi
@@ -110,5 +112,7 @@ WriteHex:
 	pop %rdi
 	pop %rsi
 	pop %rdx
+	pop %rcx
 	pop %rbx
+	pop %rax
 	ret
