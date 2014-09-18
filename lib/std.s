@@ -1,6 +1,12 @@
 .data
 	conv: .ascii "0123456789abcdef0x\n"		# WriteHex
 
+	.set pageSize, 4096	# Alloc, AllocPage
+	pageAddr: .quad 0	# Alloc
+	pageIdx: .word 0	# Alloc
+
+.global pageAddr	# So that 'asm/alloc' can test it
+
 .bss
 	.lcomm convb, 2	# WriteHex
 
@@ -111,6 +117,90 @@ WriteHex:
 
 	pop %rdi
 	pop %rsi
+	pop %rdx
+	pop %rcx
+	pop %rbx
+	pop %rax
+	ret
+
+# ---
+# Allocate %ax bytes of memory
+# IN: %ax How many bytes to allocate
+# OUT: %rsi pointer to allocated memory.
+# Don't write past (%rsi + %rax), there's no checks.
+.global Alloc
+Alloc:
+	push %rdx
+	push %rdi
+
+	# Cannot allocate more than pageSize bytes
+	cmp $pageSize, %rax
+	jle .LwithinPageSize
+	mov $0, %rsi
+	jmp .LallocEnd
+
+.LwithinPageSize:
+
+	# Will requested memory fit in current page?
+
+	movw pageIdx, %dx
+	addw %ax, %dx
+	cmp $pageSize, %dx
+	jle .LnotBeyondPage
+
+	# ... it won't, force new page allocation
+	movq $0, pageAddr
+	movw $0, pageIdx
+
+.LnotBeyondPage:
+
+	# Do we need to allocate a page?
+
+	mov pageAddr, %rdi
+	cmpq $0, %rdi
+	jne .LgotPage
+
+	call AllocPage
+	mov %rsi, pageAddr	# Store page address at $pageAddr
+
+.LgotPage:
+
+	# rsi = $pageAddr + $pageIdx
+	mov pageAddr, %rsi
+	addw pageIdx, %rsi
+
+	addw %ax, pageIdx		# Move pageIdx along to next free space
+
+.LallocEnd:
+	pop %rdi
+	pop %rdx
+	ret
+
+# ---
+# Allocate one page of memory
+# OUT: %rsi pointer to allocated memory
+.global AllocPage
+AllocPage:
+	push %rax
+	push %rbx
+	push %rcx
+	push %rdx
+	push %rdi
+
+	mov $12, %rax	# brk
+	# 0 is invalid value. On failure brk returns position of current brk,
+	# i.e. the start of the heap, and of the block we're about to allocate
+	mov $0, %rdi
+	syscall
+
+	mov %rax, %rsi		# Pointer to allocated memory
+
+	mov %rax, %rdi		# Move top of heap to here...
+	add $pageSize, %rdi	# .. plus the size of one page
+	mov $12, %rax		# Call brk again, this time with valid value
+	syscall
+
+	pop %rdi
 	pop %rdx
 	pop %rcx
 	pop %rbx
