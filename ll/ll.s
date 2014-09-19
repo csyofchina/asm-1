@@ -59,10 +59,8 @@ _start:
 
 # Input: head in %rsi
 walk:
-	push %rax
-	push %rbx
-	push %rcx
-	push %rdi
+	enter $0, $0
+	PushA
 
 	xor %rcx, %rcx
 
@@ -75,8 +73,6 @@ walk:
 	cmp $0, %rsi
 	jne .LwalkLoop
 
-	pop %rdi
-	pop %rcx
-	pop %rbx
-	pop %rax
+	PopA
+	leave
 	ret

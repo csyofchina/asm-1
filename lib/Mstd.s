@@ -1,9 +1,11 @@
+# exit(0)
 .macro Exit
 	mov $60, %eax	# NR_exit
 	mov $0, %edi	# exit code 0
 	syscall
 .endm
 
+# write(STDOUT, str, strlen)
 .macro Write str strlen
 	push %rax
 	push %rdi
@@ -19,5 +21,25 @@
 	pop %rdx
 	pop %rsi
 	pop %rdi
+	pop %rax
+.endm
+
+# Push all the general purpose registers
+.macro PushA
+	push %rax
+	push %rbx
+	push %rcx
+	push %rdx
+	push %rsi
+	push %rdi
+.endm
+
+# Pop all the general purpose registers
+.macro PopA
+	pop %rdi
+	pop %rsi
+	pop %rdx
+	pop %rcx
+	pop %rbx
 	pop %rax
 .endm

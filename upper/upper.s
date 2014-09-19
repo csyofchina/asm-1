@@ -36,10 +36,10 @@ _start:
 # Read stdin into 'buf', putting number bytes read into %rcx
 #
 readmore:
-	mov $0, %eax	# NR_read
-	mov $0, %edi	# stdin
-	mov $buf, %esi	# &buf
-	mov $buflen, %edx	# len(buf)
+	mov $0, %rax	# NR_read
+	mov $0, %rdi	# stdin
+	mov $buf, %rsi	# &buf
+	mov $buflen, %rdx	# len(buf)
 	syscall
 	mov %rax, %rcx	# Save retval in rcx, this is number of bytes read, or EOF
 	ret
@@ -71,9 +71,9 @@ convert_skip:
 # write 'buf' to stdout
 #
 write:
-	mov $1, %eax		# NR_write
-	mov $1, %edi		# stdout
-	mov $buf, %esi		# &buf
-	mov %ecx, %edx		# len(buf)
+	mov $1, %rax		# NR_write
+	mov $1, %rdi		# stdout
+	mov $buf, %rsi		# &buf
+	mov %rcx, %rdx		# len(buf)
 	syscall
 	ret
