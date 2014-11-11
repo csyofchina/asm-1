@@ -1,6 +1,7 @@
 *.pdf
 *.o
 alloc/alloc
+allocmmap/mm
 caps/caps
 cml/cml
 djb2/djb2
